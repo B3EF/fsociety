@@ -47,8 +47,6 @@ from time import gmtime, strftime, sleep
 '''
 Common Functions
 '''
-
-
 class color:
     HEADER = '\033[95m'
     IMPORTANT = '\33[35m'
@@ -61,7 +59,19 @@ class color:
     UNDERLINE = '\033[4m'
     LOGGING = '\33[34m'
 
-
+# filtering inputs to avoid command injection
+def ci_filter(data):
+    escape_list = [";","&","|","*"," ","`",'$','(',')']
+    for charecter in data:
+        if charecter in escape_list:
+            data = data.split(charecter)[0]
+            break
+    if data == '':
+        print("\n\n[+] please provide a VALID DATA\n\n")
+    else :
+        print("[+] link : {}".format(data))
+    return data
+    
 def clearScr():
     os.system('clear')
 
@@ -466,7 +476,7 @@ class nmap:
     def run(self):
         clearScr()
         print(self.nmapLogo)
-        target = raw_input(self.targetPrompt)
+        target = ci_filter(raw_input(self.targetPrompt))
         self.menu(target)
 
     def menu(self, target):
@@ -558,7 +568,7 @@ class wpscan:
             self.install()
         clearScr()
         print(self.wpscanLogo)
-        target = raw_input("   Enter a Target: ")
+        target = ci_filter(raw_input("   Enter a Target: "))
         self.menu(target)
 
     def installed(self):
@@ -618,7 +628,7 @@ class CMSmap:
             self.install()
         clearScr()
         print(self.CMSmapLogo)
-        target = raw_input("   Enter a Target: ")
+        target = ci_filter(raw_input("   Enter a Target: "))
         self.run(target)
         response = raw_input(continuePrompt)
 
@@ -686,7 +696,7 @@ class doork:
             self.install()
         clearScr()
         print(self.doorkLogo)
-        target = raw_input("   Enter a Target: ")
+        target = ci_filter(raw_input("   Enter a Target: "))
         self.run(target)
         response = raw_input(continuePrompt)
 
@@ -999,7 +1009,7 @@ class brutex:
         os.system("cd %s && chmod +x install.sh && ./install.sh" % self.installDir)
 
     def run(self):
-        target = raw_input("Enter Target IP: ")
+        target = ci_filter(raw_input("Enter Target IP: "))
         os.system("brutex %s" % target)
 
 
@@ -1024,7 +1034,7 @@ class arachni:
             "gem install bundler && bundle install --without prof && rake install")
 
     def run(self):
-        target = raw_input("Enter Target Hostname: ")
+        target = ci_filter(raw_input("Enter Target Hostname: "))
         os.system("arachni %s --output-debug 2> %sarachni/%s.log" %
                   (target, logDir, strftime("%Y-%m-%d_%H:%M:%S", gmtime())))
 
@@ -1045,7 +1055,7 @@ def gabriel():
     os.system("wget http://pastebin.com/raw/Szg20yUh --output-document=gabriel.py")
     clearScr()
     os.system("python gabriel.py")
-    ftpbypass = raw_input("Enter Target IP and Use Command:")
+    ftpbypass = ci_filter(raw_input("Enter Target IP and Use Command:"))
     os.system("python gabriel.py %s" % ftpbypass)
 
 
@@ -1106,7 +1116,7 @@ def joomlarce():
     os.system("wget http://pastebin.com/raw/EX7Gcbxk --output-document=temp.py")
     clearScr()
     print("if the response is 200 , you will find your shell in Joomla_3.5_Shell.txt")
-    jmtarget = raw_input("Select a targets list:")
+    jmtarget = ci_filter(raw_input("Select a targets list:"))
     os.system("python temp.py %s" % jmtarget)
 
 
@@ -1311,8 +1321,8 @@ def shellnoob():
 
 
 def androidhash():
-    key = raw_input("Enter the android hash: ")
-    salt = raw_input("Enter the android salt: ")
+    key = ci_filter(raw_input("Enter the android hash: "))
+    salt = ci_filter(raw_input("Enter the android salt: "))
     os.system(
         "git clone --depth=1 https://github.com/PentesterES/AndroidPINCrack.git")
     os.system(
@@ -1321,7 +1331,7 @@ def androidhash():
 
 def cmsfew():
     print("your target must be Joomla, Mambo, PHP-Nuke, and XOOPS Only ")
-    target = raw_input("Select a target: ")
+    target = ci_filter(raw_input("Select a target: "))
     os.system(
         "wget https://dl.packetstormsecurity.net/UNIX/scanners/cms_few.py.txt -O cms.py")
     os.system("python cms.py %s" % target)
